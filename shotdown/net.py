@@ -51,7 +51,7 @@ def download_subtitle(url, path="", dest_dir="", ):
     if not path:
         _, params = cgi.parse_header(response.headers.get('Content-Disposition', ''))
         path = os.path.basename(params['filename'])
-        log.info("Saving as %s" % (path))
+    log.info("Saving as %s" % (path))
 
     with open(os.path.join(dest_dir, path), "wb") as subtitle:
         subtitle.write(response.read())
