@@ -36,6 +36,8 @@ def get_subtitle(r, va):
                 log.debug (srt_url)
                 net.download_subtitle(srt_url, dest_dir=va['output_dir'])
     else:
+        if va["index"]:
+            log.info("Selected subtitle index: %d", va["index"])
         srt_url = r[va["index"]]["Files"][0]["Link"]
         log.debug (srt_url)
 
