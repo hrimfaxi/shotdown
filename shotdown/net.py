@@ -42,6 +42,7 @@ def get_metadata(pathinfo, filehash="", lang=""):
     return res_js
 
 def download_subtitle(url, path="", dest_dir="", ):
+    log.info ("Downloading subtitle...")
     req = urllib2.Request(url, '', HEADERS)
     response = urllib2.urlopen(req)
 
