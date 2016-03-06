@@ -41,6 +41,14 @@ def get_metadata(pathinfo, filehash="", lang=""):
     res_js = json.loads(response)
     return res_js
 
+def get_spared_pathname(path):
+    orig = os.path.splitext(path)
+    cnt = 1
+    while os.path.exists(path):
+        path = "%s(%d)%s" % (orig[0], cnt, orig[-1])
+        cnt += 1
+    return path
+
 def download_subtitle(url, path="", dest_dir="", ):
     log.info ("Downloading subtitle...")
     req = urllib2.Request(url, '', HEADERS)
@@ -52,9 +60,9 @@ def download_subtitle(url, path="", dest_dir="", ):
     if not path:
         _, params = cgi.parse_header(response.headers.get('Content-Disposition', ''))
         path = os.path.basename(params['filename'])
+    path = get_spared_pathname(os.path.join(dest_dir, path))
     log.info("Saving as %s" % (path))
-
-    with open(os.path.join(dest_dir, path), "wb") as subtitle:
+    with open(path, "wb") as subtitle:
         subtitle.write(response.read())
 
 def main():
