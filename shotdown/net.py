@@ -1,15 +1,29 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 # coding: utf-8
 
-import urllib, urllib2, cgi, os, sys, json
-import file_hash, log
+import cgi, os, sys, json
 from shotdown.constants import __version__
+from shotdown import log
+
+if sys.version_info[0] < 3:
+    import urllib, urllib2
+    Request = urllib2.Request
+    urlopen = urllib2.urlopen
+    urlencode = urllib.urlencode
+else:
+    import urllib.request, urllib.parse
+    Request = urllib.request.Request
+    urlopen = urllib.request.urlopen
+    urlencode = urllib.parse.urlencode
 
 URI = "https://www.shooter.cn/api/subapi.php"
 SYS_ENCODING = sys.getfilesystemencoding()
 HEADERS = { "User-Agent" : "shotdown/%s (https://github.com/hrimfaxi/shotdown)" % (__version__)}
 
+
 def to_utf8(path):
+    if isinstance(path, str):
+        return path.encode('utf8')
     return path.decode(SYS_ENCODING).encode('utf8')
 
 def get_metadata(pathinfo, filehash="", lang=""):
@@ -24,10 +38,10 @@ def get_metadata(pathinfo, filehash="", lang=""):
         post_field["lang"] = lang
     if filehash:
         post_field["filehash"] = filehash
-    data = urllib.urlencode(post_field)
+    data = urlencode(post_field)
     log.debug("Sending request: %s", data)
-    req = urllib2.Request(URI, data, HEADERS)
-    response = urllib2.urlopen(req)
+    req = Request(URI, data.encode('utf-8'), HEADERS)
+    response = urlopen(req)
     
     if response.code != 200:
         return []
@@ -38,7 +52,7 @@ def get_metadata(pathinfo, filehash="", lang=""):
     if response == "\xff":
         return []
 
-    res_js = json.loads(response)
+    res_js = json.loads(response.decode('utf-8'))
     return res_js
 
 def get_spared_pathname(path):
@@ -51,8 +65,8 @@ def get_spared_pathname(path):
 
 def download_subtitle(url, path="", dest_dir="", ):
     log.info ("Downloading subtitle...")
-    req = urllib2.Request(url, '', HEADERS)
-    response = urllib2.urlopen(req)
+    req = Request(url, None, HEADERS)
+    response = urlopen(req)
 
     if response.code != 200:
         raise RuntimeError("Subtitle downloading gets HTTP error code(%d)" % (response.code))
