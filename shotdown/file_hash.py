@@ -16,7 +16,7 @@ def calc_file_hash(path):
         if size < 8192:
             raise RuntimeError("video file length too small")
 
-        offsets = [ 4096, math.floor(2 * size / 3), math.floor(size / 3), size - 8192]
+        offsets = [ 4096, int(math.floor(2 * size / 3)), int(math.floor(size / 3)), size - 8192]
         r = [ digest_file(f, offset, 4096) for offset in offsets ]
 
     return ";".join(r)

@@ -6,7 +6,7 @@ from shotdown import file_hash, net, log
 from shotdown.constants import __version__
 
 def get_subtitle_directory():
-    return os.path.join(os.path.expanduser('~'), ".mplayer/sub")
+    return os.path.join(os.path.expanduser('~'), ".mplayer", "sub")
 
 def mkdir_recursive(path):
     try:
