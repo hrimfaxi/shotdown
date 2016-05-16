@@ -34,7 +34,7 @@ def get_subtitle(r, va):
             for j in range(len(r[i]["Files"])):
                 srt_url = r[i]["Files"][j]["Link"]
                 log.debug (srt_url)
-                net.download_subtitle(srt_url, dest_dir=va['output_dir'])
+                net.download_subtitle(srt_url, va['only_needed'], dest_dir=va['output_dir'])
     else:
         if va["index"]:
             log.info("Selected subtitle index: %d", va["index"])
@@ -42,9 +42,9 @@ def get_subtitle(r, va):
         log.debug (srt_url)
 
         if va['output_filename']:
-            net.download_subtitle(srt_url, path=va['output_filename'], dest_dir=va['output_dir'])
+            net.download_subtitle(srt_url, va['only_needed'], path=va['output_filename'], dest_dir=va['output_dir'])
         else:
-            net.download_subtitle(srt_url, dest_dir=va['output_dir'])
+            net.download_subtitle(srt_url, va['only_needed'], dest_dir=va['output_dir'])
 
 def get_subtitles(va):
     mkdir_recursive(va['output_dir'])
@@ -72,6 +72,7 @@ def main():
     parser.add_argument('-a', '--all', action='store_true', help='Download all subtitles')
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug mode')
     parser.add_argument('-n', '--no-download', dest='no_download', action='store_true', help='Don\'t download subtitle, show metadata only')
+    parser.add_argument('--only-needed', action='store_true', help='Only download when needed')
     parser.add_argument('-i', '--index', type=int, \
             default=0, help='Choice subtitle index to download, starting from 0')
     parser.add_argument('-l', '--language', type=str, \

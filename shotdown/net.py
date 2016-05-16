@@ -63,7 +63,7 @@ def get_spared_pathname(path):
         cnt += 1
     return path
 
-def download_subtitle(url, path="", dest_dir="", ):
+def download_subtitle(url, only_needed, path="", dest_dir="", ):
     log.info ("Downloading subtitle...")
     req = Request(url, None, HEADERS)
     response = urlopen(req)
@@ -74,7 +74,13 @@ def download_subtitle(url, path="", dest_dir="", ):
     if not path:
         _, params = cgi.parse_header(response.headers.get('Content-Disposition', ''))
         path = os.path.basename(params['filename'])
-    path = get_spared_pathname(os.path.join(dest_dir, path))
+    if only_needed:
+        if os.path.exists(path):
+            log.info("%s already exists, no need to download." % (path))
+            return
+    else:
+        path = get_spared_pathname(os.path.join(dest_dir, path))
+
     log.info("Saving as %s" % (path))
     with open(path, "wb") as subtitle:
         subtitle.write(response.read())
