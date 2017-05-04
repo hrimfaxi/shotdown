@@ -49,7 +49,7 @@ def get_metadata(pathinfo, filehash="", lang=""):
     response = response.read()
 
     # 没有找到字幕
-    if response == "\xff":
+    if response == b"\xff":
         return []
 
     res_js = json.loads(response.decode('utf-8'))
